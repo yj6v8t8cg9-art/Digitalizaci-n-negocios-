@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desarrollo Web Élite | Impulsa tu Negocio</title>
+    <style>
+        /* --- VARIABLES Y RESET --- */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --bg-glass: rgba(15, 15, 20, 0.7);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- FONDO ESPIRAL LED --- */
+        #led-spiral {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a0a16 0%, #000000 100%);
+        }
+
+        /* --- ESTRUCTURA Y DISEÑO GLASSMORPHISM --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* --- SECCIONES --- */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Tarjetas (Cards) */
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            opacity: 0; /* Para animación de scroll */
+            transform: translateY(30px);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 243, 255, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--neon-purple);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .card ul {
+            margin-top: 15px;
+            list-style: none;
+        }
+
+        .card ul li {
+            margin-bottom: 10px;
+            color: var(--text-main);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .card ul li::before {
+            content: '✓';
+            color: var(--neon-blue);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        /* --- ANIMACIONES CSS --- */
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 10px rgba(0,243,255,0.2); }
+            100% { text-shadow: 0 0 20px rgba(0,243,255,0.8), 0 0 30px rgba(188,19,254,0.6); }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas para el fondo de espiral LED -->
+    <canvas id="led-spiral"></canvas>
+
+    <div class="content">
+        <header>
+            <div class="container">
+                <h1>El Futuro Digital de tu Negocio</h1>
+                <p>Creamos ecosistemas digitales completos y personalizados. No hacemos simples páginas web; desarrollamos herramientas tecnológicas de alto impacto diseñadas específicamente para automatizar tus procesos, atraer más clientes y escalar tu marca al siguiente nivel.</p>
+                <a href="#contacto" class="btn">Solicitar una Cotización</a>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- SECCIÓN: Servicios Generales y Especializados -->
+            <section id="servicios">
+                <h2 class="section-title">Soluciones a la Medida</h2>
+                <div class="grid">
+                    <div class="card fade-in">
+                        <h3>Sitios Web 100% Independientes</h3>
+                        <p>Desarrollamos la identidad digital única de tu empresa desde cero. Olvídate de plantillas genéricas; tu negocio merece una plataforma exclusiva, optimizada para cargar a la velocidad de la luz y diseñada para convertir visitantes en clientes reales. Adaptable a cualquier industria, desde consultorios hasta tiendas de retail.</p>
+                    </div>
+
+                    <div class="card fade-in">
+                        <h3>Especialización en Restaurantes</h3>
+                        <p>Llevamos tu negocio gastronómico al mundo digital con herramientas que facilitan tu operación diaria y mejoran la experiencia de tus comensales. Todo integrado en tu propia página web:</p>
+                        <ul>
+                            <li><strong>Menú Digital Interactivo:</strong> Atractivo, categorizado y fácil de actualizar.</li>
+                            <li><strong>Reservación de Mesas:</strong> Sistema automatizado con confirmación en tiempo real.</li>
+                            <li><strong>Pedidos Online:</strong> Integración de delivery propio sin pagar altas comisiones a terceros.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN: Control y Posicionamiento -->
+            <section id="tecnologia">
+                <h2 class="section-title">Control Total y Visibilidad</h2>
+                <div class="grid">
+                    <div class="card fade-in">
+                        <h3>Panel Administrativo (Autogestión)</h3>
+                        <p>Te entregamos las llaves de tu negocio digital. Proveemos un Panel de Control Privado (Admin Dashboard) extremadamente intuitivo. No necesitas saber programación para usarlo. Podrás, en el tiempo y forma que desees:</p>
+                        <ul>
+                            <li>Modificar textos, precios y fotografías al instante.</li>
+                            <li>Aprobar o rechazar reservaciones de clientes.</li>
+                            <li>Publicar promociones por tiempo limitado.</li>
+                            <li>Ver estadísticas básicas de visitas.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card fade-in">
+                        <h3>Integración Exacta con Google Maps</h3>
+                        <p>Nunca fue tan fácil encontrarte. Integramos mapas interactivos con la geolocalización exacta de tu sucursal o sucursales. Los clientes podrán trazar rutas directas desde su ubicación hasta la puerta de tu negocio con un solo clic, mejorando drásticamente el tráfico físico a tu local.</p>
+                    </div>
+
+                    <div class="card fade-in">
+                        <h3>Estrategias de Marketing Integradas</h3>
+                        <p>Una página web sin tráfico es como una tienda en el desierto. Implementamos estrategias sólidas para asegurar tu éxito comercial:</p>
+                        <ul>
+                            <li><strong>SEO Avanzado:</strong> Posicionamiento en Google para aparecer cuando te busquen.</li>
+                            <li><strong>Embudos de Venta:</strong> Estructuras diseñadas para guiar al usuario a comprar o reservar.</li>
+                            <li><strong>Pixeles de Seguimiento:</strong> Listos para campañas efectivas en redes sociales (Facebook/Instagram Ads).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer id="contacto">
+            <div class="container">
+                <h2>¿Listo para digitalizar tu negocio?</h2>
+                <p style="margin: 20px 0; color: var(--text-muted);">Contáctanos hoy y diseñemos la estrategia perfecta para tu empresa.</p>
+                <a href="#" class="btn">Contactar a un Asesor</a>
+                <p style="margin-top: 40px; font-size: 0.9rem; color: #666;">&copy; 2026 Agencia de Desarrollo Web. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- SCRIPT: Animaciones y Efecto del Espiral LED -->
+    <script>
+        /* ==========================================
+           1. FONDO ESPIRAL INFINITO CON LUCES LED (CANVAS)
+           ========================================== */
+        const canvas = document.getElementById('led-spiral');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let angleOffset = 0;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Parámetros de las partículas/luces del espiral
+        const particles = [];
+        const numParticles = 400; // Cantidad de luces
+        
+        for (let i = 0; i < numParticles; i++) {
+            particles.push({
+                angle: i * 0.1,
+                radius: i * 1.5,
+                speed: 0.02 + (Math.random() * 0.01),
+                color: i % 2 === 0 ? '#00f3ff' : '#bc13fe', // Azul neón y Morado neón
+                size: Math.random() * 2 + 1
+            });
+        }
+
+        function drawSpiral() {
+            // Fondo semitransparente para efecto de rastro luminoso (trail)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angleOffset);
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                
+                // Efecto 3D falso acercándose
+                p.radius += 0.5;
+                p.angle += 0.05;
+
+                // Reiniciar partícula si sale demasiado lejos
+                if (p.radius > Math.max(width, height)) {
+                    p.radius = 10; // Renace en el centro
+                }
+
+                const x = p.radius * Math.cos(p.angle);
+                const y = p.radius * Math.sin(p.angle);
+
+                // Dibujar luz LED con brillo (Glow)
+                ctx.beginPath();
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+            }
+
+            ctx.restore();
+            angleOffset += 0.002; // Rotación global del espiral
+            requestAnimationFrame(drawSpiral);
+        }
+        
+        drawSpiral(); // Iniciar animación
+
+        /* ==========================================
+           2. ANIMACIÓN DE ENTRADA AL HACER SCROLL
+           ========================================== */
+        const cards = document.querySelectorAll('.fade-in');
+
+        const observerOptions = {
+            threshold: 0.2, // El elemento aparece cuando el 20% es visible
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const scrollObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Dejar de observar una vez que ya apareció
+                }
+            });
+        }, observerOptions);
+
+        cards.forEach(card => {
+            scrollObserver.observe(card);
+        });
+    </script>
+</body>
+</html>
